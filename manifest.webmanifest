@@ -1,29 +1,36 @@
+
 {
-  "id": "/",
+  "id": "https://azimut-teal.vercel.app/",
   "name": "PROLITE",
   "short_name": "PROLITE",
-  "description": "Aplikasi kalkulator azimut kiblat dan azimut utara sejati dengan GPS dan kompas.",
-  "start_url": "/",
-  "scope": "/",
+  "description": "PROLITE adalah aplikasi kalkulator azimut kiblat dan azimut utara sejati dengan GPS, kompas, peta, dan riwayat pengukuran.",
+  "start_url": "https://azimut-teal.vercel.app/",
+  "scope": "https://azimut-teal.vercel.app/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b1220",
   "theme_color": "#0b1220",
+  "lang": "id-ID",
+  "categories": [
+    "utilities",
+    "education",
+    "navigation"
+  ],
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "https://azimut-teal.vercel.app/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "https://azimut-teal.vercel.app/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "https://azimut-teal.vercel.app/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
