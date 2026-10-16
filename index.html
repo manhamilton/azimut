@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#172b3a">
+  <meta name="description" content="Kalkulator Azimut Utara Sejati dan Azimut Kiblat berdasarkan rumus spreadsheet.">
+  <title>Azimut Utara</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand-mark">A</div>
+  <div><strong>Azimut Utara</strong><small>Kalkulator astronomi & arah kiblat</small></div>
+  <button id="installBtn" class="ghost small hidden" type="button">Pasang</button>
+</header>
+<main class="container">
+  <section class="intro">
+    <p class="eyebrow">ALAT UKUR ASTRONOMI</p>
+    <h1>Hitung arah dengan lebih terukur.</h1>
+    <p class="muted">Masukkan waktu dan koordinat untuk menghitung Azimut Utara Sejati serta arah Ka'bah.</p>
+  </section>
+
+  <nav class="tabs" aria-label="Navigasi utama">
+    <button class="tab active" data-tab="calc">Kalkulator</button>
+    <button class="tab" data-tab="compass">Kompas</button>
+    <button class="tab" data-tab="history">Riwayat</button>
+    <button class="tab" data-tab="map">Peta</button>
+  </nav>
+
+  <section id="calc" class="panel tab-panel">
+    <div class="section-head"><div><h2>Data pengamatan</h2><p class="muted">Nilai awal mengikuti contoh di spreadsheet.</p></div><span class="pill">Lokal</span></div>
+    <form id="calcForm">
+      <div class="grid two">
+        <label>Tanggal<input id="date" type="date" value="2026-10-15" required></label>
+        <label>Waktu lokal<input id="time" type="time" step="1" value="15:55:00" required></label>
+        <label>Zona waktu (jam dari UTC)<input id="zone" type="number" min="-12" max="14" step="0.5" value="7" required></label>
+        <label>Latitude (°)<input id="lat" type="number" min="-90" max="90" step="0.000001" value="-6.884469" required></label>
+        <label>Longitude (°)<input id="lon" type="number" min="-180" max="180" step="0.000001" value="107.557319" required></label>
+        <label>Nama lokasi (opsional)<input id="place" type="text" placeholder="Contoh: Lokasi pengamatan"></label>
+      </div>
+      <div class="actions">
+        <button id="gpsBtn" class="secondary" type="button">◎ Gunakan GPS</button>
+        <button class="primary" type="submit">Hitung azimut</button>
+      </div>
+    </form>
+    <div id="status" class="notice" role="status">Data awal dimuat. Tekan “Hitung azimut” untuk memperbarui hasil.</div>
+    <div class="results">
+      <article class="result-card"><div class="result-label">Azimut Kiblat</div><div class="result-number" id="qiblaDeg">—</div><div class="result-dms" id="qiblaDms">—</div><div class="result-foot">Dari utara sejati, searah jarum jam</div></article>
+      <article class="result-card"><div class="result-label">Azimut Utara Sejati*</div><div class="result-number" id="northDeg">—</div><div class="result-dms" id="northDms">—</div><div class="result-foot">Mengikuti pendekatan rumus spreadsheet</div></article>
+    </div>
+    <div class="details">
+      <h3>Detail perhitungan</h3>
+      <div class="detail-row"><span>Julian Day (JD)</span><strong id="jd">—</strong></div>
+      <div class="detail-row"><span>Equation of Time</span><strong id="eot">—</strong></div>
+      <div class="detail-row"><span>Deklinasi Matahari</span><strong id="decl">—</strong></div>
+      <div class="detail-row"><span>Sudut waktu Matahari</span><strong id="hourAngle">—</strong></div>
+      <div class="detail-row"><span>Koordinat Ka'bah</span><strong>21.422500°, 39.826161°</strong></div>
+    </div>
+    <div class="actions export-actions">
+      <button id="saveBtn" class="secondary" type="button">Simpan ke riwayat</button>
+      <button id="csvBtn" class="secondary" type="button">Ekspor CSV</button>
+      <button id="jsonBtn" class="secondary" type="button">Ekspor JSON</button>
+      <button id="printBtn" class="secondary" type="button">Cetak / PDF</button>
+    </div>
+    <p class="fineprint">*Azimut Utara Sejati memakai pendekatan dan pemilihan kuadran yang ada pada Excel. Untuk penggunaan observasi presisi, cocokkan dengan metode astronomi dan alat ukur terkalibrasi.</p>
+  </section>
+
+  <section id="compass" class="panel tab-panel hidden">
+    <div class="section-head"><div><h2>Kompas kiblat</h2><p class="muted">Arah dihitung dari koordinat yang dimasukkan.</p></div></div>
+    <div class="compass-wrap">
+      <div id="compassRose" class="compass-rose">
+        <span class="north">N</span><span class="east">E</span><span class="south">S</span><span class="west">W</span>
+        <div class="tick-ring"></div><div class="needle" id="needle"><div class="needle-head"></div></div>
+        <div class="compass-center">Q</div>
+      </div>
+      <div class="compass-reading"><div class="muted">Arah kiblat dari utara sejati</div><strong id="compassAngle">—</strong><p id="sensorStatus" class="muted">Kompas visual ini mengacu ke utara sejati. Sensor magnetometer HP dapat berbeda akibat gangguan magnetik.</p></div>
+    </div>
+    <div class="actions"><button id="sensorBtn" class="primary" type="button">Aktifkan sensor kompas</button><button id="calibrateBtn" class="secondary" type="button">Petunjuk kalibrasi</button></div>
+    <div id="calibration" class="notice hidden">Jauhkan HP dari magnet, speaker, casing magnetik, dan benda logam. Gerakkan HP membentuk angka 8 lalu bandingkan dengan arah kompas tepercaya. Browser/HP tertentu tidak menyediakan sensor orientasi.</div>
+  </section>
+
+  <section id="history" class="panel tab-panel hidden">
+    <div class="section-head"><div><h2>Riwayat hitung</h2><p class="muted">Tersimpan di perangkat/browser ini.</p></div><button id="clearHistory" class="ghost small" type="button">Hapus semua</button></div>
+    <div id="historyList" class="history-list"><div class="empty">Belum ada riwayat. Simpan hasil dari tab Kalkulator.</div></div>
+    <div class="actions"><button id="historyCsvBtn" class="secondary" type="button">Ekspor semua CSV</button></div>
+  </section>
+
+  <section id="map" class="panel tab-panel hidden">
+    <div class="section-head"><div><h2>Peta lokasi</h2><p class="muted">Peta membutuhkan koneksi internet.</p></div></div>
+    <div id="mapCanvas" class="map-canvas"></div>
+    <p class="fineprint">Peta memakai OpenStreetMap. Garis menunjukkan arah awal menuju Ka'bah secara visual; untuk peta dan geodesi presisi, gunakan perhitungan azimut numerik di atas.</p>
+    <div class="actions"><button id="openMapBtn" class="secondary" type="button">Buka lokasi di OpenStreetMap</button></div>
+  </section>
+
+  <footer><span>Azimut Utara · Web App</span><span>Rumus acuan: AZIMUT UTARA EXP.xlsx</span></footer>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="app.js"></script>
+</body>
+</html>
