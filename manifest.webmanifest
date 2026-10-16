@@ -1,0 +1,11 @@
+{
+  "name": "Azimut Utara",
+  "short_name": "Azimut",
+  "description": "Kalkulator Azimut Utara Sejati dan arah Kiblat",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7f9",
+  "theme_color": "#172b3a",
+  "icons": []
+}
