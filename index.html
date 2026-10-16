@@ -43,6 +43,7 @@
       </div>
       <div class="actions">
         <button id="gpsBtn" class="secondary" type="button">◎ Gunakan GPS</button>
+        <button id="nowBtn" class="secondary" type="button">◷ Gunakan Waktu Sekarang</button>
         <button class="primary" type="submit">Hitung azimut</button>
       </div>
     </form>
@@ -65,7 +66,7 @@
       <button id="jsonBtn" class="secondary" type="button">Ekspor JSON</button>
       <button id="printBtn" class="secondary" type="button">Cetak / PDF</button>
     </div>
-    <p class="fineprint">*Aplikasi ini masih dalam tahap pengembangan.</p>
+    <p class="fineprint">*Azimut Utara Sejati memakai pendekatan dan pemilihan kuadran yang ada pada Excel. Untuk penggunaan observasi presisi, cocokkan dengan metode astronomi dan alat ukur terkalibrasi.</p>
   </section>
 
   <section id="compass" class="panel tab-panel hidden">
@@ -95,8 +96,15 @@
     <div class="actions"><button id="openMapBtn" class="secondary" type="button">Buka lokasi di OpenStreetMap</button></div>
   </section>
 
-  <footer><span>Azimut Utara · Web App</span><span>Oleh: Tubagus Hadi Sutiksna</span></span></footer>
+  <footer><span>Azimut Utara · Web App</span><span>Rumus acuan: AZIMUT UTARA EXP.xlsx</span></footer>
 </main>
+<div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="polite" aria-label="Sedang menghitung azimut">
+  <div class="loading-card">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <strong>Menghitung azimut...</strong>
+    <span>Memproses waktu dan koordinat pengamatan</span>
+  </div>
+</div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="app.js"></script>
 </body>

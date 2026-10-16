@@ -124,7 +124,35 @@
     if(id==="map" && current) setTimeout(()=>{initMap();map&&map.invalidateSize();updateMap(current)},100);
   }
   document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>activateTab(b.dataset.tab)));
-  $("calcForm").addEventListener("submit",e=>{e.preventDefault();compute()});
+  let isCalculating = false;
+  $("calcForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    if(isCalculating)return;
+    isCalculating = true;
+    const submitButton = $("calcForm").querySelector('button[type="submit"]');
+    const overlay = $("loadingOverlay");
+    submitButton.disabled = true;
+    overlay.classList.remove("hidden");
+    // A brief visual pause lets the loading state be seen before rendering results.
+    window.setTimeout(()=>{
+      try { compute(); }
+      finally {
+        overlay.classList.add("hidden");
+        submitButton.disabled = false;
+        isCalculating = false;
+      }
+    }, 650);
+  });
+  $("nowBtn").addEventListener("click",()=>{
+    const now=new Date();
+    const pad=n=>String(n).padStart(2,"0");
+    $("date").value=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+    $("time").value=`${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    // JavaScript's getTimezoneOffset has the opposite sign of UTC offset.
+    $("zone").value=String(-now.getTimezoneOffset()/60);
+    compute(false);
+    if(current) $("status").textContent=`Waktu perangkat diterapkan: ${$("date").value} ${$("time").value} (UTC${Number($("zone").value)>=0?"+":""}${$("zone").value}). Hasil sudah diperbarui.`;
+  });
   $("saveBtn").addEventListener("click",saveHistory);
   $("csvBtn").addEventListener("click",()=>exportCurrent("csv"));
   $("jsonBtn").addEventListener("click",()=>exportCurrent("json"));
